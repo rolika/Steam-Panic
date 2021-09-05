@@ -1,7 +1,8 @@
 import pygame
 from pygame.locals import *
-from pygame import time
+from pygame import freetype, time  # import freetype here to initialize it
 from enum import Enum
+from game import Game
 
 
 SCREEN_SIZE = (640, 480)
@@ -20,6 +21,7 @@ class Main():
         self._run(screen, state, framerate, clock, background)
     
     def _run(self, screen:pygame.Surface, state:State, framerate:int, clock:time.Clock, background:pygame.Color) -> None:
+        game = Game(screen)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -30,6 +32,8 @@ class Main():
                             state = State.PLAY
                         elif state == State.OVER:
                             state = State.TITLE
+                        elif state == State.PAUSED:
+                            state = State.PLAY
                     if event.key == K_ESCAPE:
                         if state == State.TITLE:
                             state = State.OVER
@@ -45,8 +49,9 @@ class Main():
 
             screen.fill(background)
 
+            changed = []
             if state == State.TITLE:
-                pass
+                changed += game.show_title()
             elif state == State.INSTRUCTIONS:
                 pass
             elif state == State.PLAY:
@@ -57,7 +62,7 @@ class Main():
                 pygame.quit()
                 return
 
-            pygame.display.flip()
+            pygame.display.update(changed)
             clock.tick(framerate)
 
 
