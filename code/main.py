@@ -21,7 +21,9 @@ class Main():
         self._run(screen, state, framerate, clock, background)
     
     def _run(self, screen:pygame.Surface, state:State, framerate:int, clock:time.Clock, background:pygame.Color) -> None:
+
         game = Game(screen)
+        
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -48,21 +50,20 @@ class Main():
 
 
             screen.fill(background)
-
-            changed = []
+            
             if state == State.TITLE:
-                changed += game.show_title()
+                game.show_title()
             elif state == State.INSTRUCTIONS:
                 pass
             elif state == State.PLAY:
-                pass
+                game.play()
             elif state == State.PAUSED:
                 pass
             elif state == State.OVER:                
                 pygame.quit()
                 return
 
-            pygame.display.update(changed)
+            pygame.display.update()
             clock.tick(framerate)
 
 
