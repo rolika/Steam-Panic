@@ -1,7 +1,8 @@
 from pygame import key, sprite, Surface
 from pygame.locals import *
 
-from misc import apply_gravity
+from misc import apply_gravity, constrain_to_screen
+
 
 PLAYER_RUN_ACCELERATION = 0.1
 PLAYER_CLIMB_ACCELERATION = 0.1
@@ -10,22 +11,33 @@ PLAYER_CLIMB_SPEED = 1
 PLAYER_JUMP_ACCELERATION = 0.5
 
 
-
-class Platform(sprite.Sprite):
-    def __init__(self, size:tuple=(128,16)):
+class SimpleSprite(sprite.Sprite):
+    def __init__(self, size:tuple):
         super().__init__()
         self.image = Surface(size)
         self.image.fill("white")
         self.rect = self.image.get_rect()
         self.controlled = False
+        self.size = size
 
 
-class Player(Platform):
-    def __init__(self, size:tuple=(16,32)):
+class Platform(SimpleSprite):
+    def __init__(self, size:tuple=(128,16)):
+        super().__init__(size)
+
+
+class CharacterSprite(SimpleSprite):
+    def __init__(self, size:tuple):
         super().__init__(size)
         self.dx = 0
-        self.dy = 0
+        self.dy = 0  
+
+
+class Player(CharacterSprite):
+    def __init__(self, size:tuple=(16,32)):
+        super().__init__(size)
     
+    @constrain_to_screen
     @apply_gravity
     def update(self):
         self.controlled = self._get_input()
