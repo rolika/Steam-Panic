@@ -1,8 +1,7 @@
 from pygame import key, sprite, Surface
 from pygame.locals import *
 
-
-GRAVITY_ACCELERATION = 0.05
+from misc import apply_gravity
 
 PLAYER_RUN_ACCELERATION = 0.1
 PLAYER_CLIMB_ACCELERATION = 0.1
@@ -18,34 +17,34 @@ class Platform(sprite.Sprite):
         self.image = Surface(size)
         self.image.fill("white")
         self.rect = self.image.get_rect()
+        self.controlled = False
 
 
 class Player(Platform):
     def __init__(self, size:tuple=(16,32)):
         super().__init__(size)
-        self._dx = 0
-        self._dy = 0
+        self.dx = 0
+        self.dy = 0
     
+    @apply_gravity
     def update(self):
-        self._get_input()
-        self.rect.centerx += self._dx
-        self.rect.centery += self._dy
+        self.controlled = self._get_input()
+        self.rect.centerx += self.dx
+        self.rect.centery += self.dy
+        return self
     
     def _get_input(self):
         keys = key.get_pressed()
         if not any(keys):
-            self._apply_gravity()
+            return False
         if keys[K_UP]:
-            self._dy -= PLAYER_CLIMB_ACCELERATION
+            self.dy -= PLAYER_CLIMB_ACCELERATION
         elif keys[K_DOWN]:            
-            self._dy += PLAYER_CLIMB_ACCELERATION
+            self.dy += PLAYER_CLIMB_ACCELERATION
         if keys[K_RIGHT]:
-            self._dx += PLAYER_RUN_ACCELERATION
+            self.dx += PLAYER_RUN_ACCELERATION
         elif keys[K_LEFT]:            
-            self._dx -= PLAYER_RUN_ACCELERATION
+            self.dx -= PLAYER_RUN_ACCELERATION
         if keys[K_SPACE]:
-            self._dy -= PLAYER_JUMP_ACCELERATION
-    
-    def _apply_gravity(self):
-        self._dx = 0
-        self._dy += GRAVITY_ACCELERATION
+            self.dy -= PLAYER_JUMP_ACCELERATION
+        return True
