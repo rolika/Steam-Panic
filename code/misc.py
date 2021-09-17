@@ -25,16 +25,16 @@ def import_frames(img:str, num_of_frames:int, size:tuple) -> list:
 
 
 def apply_gravity(update):
-    def gravitate(element):
-        if not element.controlled:
+    def gravitate(element, platforms):
+        if not (element.controlled or element.on_platform):
             element.dx = 0
             element.dy += GRAVITY_ACCELERATION
-        return update(element)
+        return update(element, platforms)
     return gravitate
 
 
 def constrain_to_screen(update):
-    def constrain(element):
+    def constrain(element, platforms):
         left_limit = element.size[0] // 2 + 1
         right_limit = SCREEN_SIZE[0] - left_limit
         top_limit = element.size[1] // 2 + 1
@@ -51,5 +51,8 @@ def constrain_to_screen(update):
         if element.rect.centery > bottom_limit:
             element.rect.centery = bottom_limit
             element.dy = 0
-        return update(element)
+        return update(element, platforms)
     return constrain
+
+def stands_on_platform(character, platform):
+    return character.rect.bottom >= platform.rect.top and platform.rect.left <= character.rect.left and platform.rect.right >= character.rect.right
