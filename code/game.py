@@ -1,4 +1,6 @@
 from pygame import sprite, Surface
+
+from constants import PlayerAttributes
 from text import SimpleText
 from sprites import Platform, Player
 
@@ -13,7 +15,7 @@ class Game:
         self._title_text = SimpleText("Steam Panic", "m5x7.ttf", 64, "white")
         self._title_text.rect.center = midscreen
 
-        self._player_sprite = Player()
+        self._player_sprite = Player(PlayerAttributes)
         self._player_sprite.rect.center = midscreen
 
         self._platform_sprite = Platform()

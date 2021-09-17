@@ -1,16 +1,9 @@
 import pygame
 from pygame.locals import *
 from pygame import freetype, time  # import freetype here to initialize it
-from enum import Enum
+
+from constants import ScreenAttributes, State
 from game import Game
-
-
-SCREEN_SIZE = (640, 480)
-FRAMERATE = 60
-BLACK = (0, 0, 0)
-
-
-State = Enum("State", "TITLE INSTRUCTIONS PLAY PAUSED OVER")
 
 
 class Main():
@@ -48,7 +41,6 @@ class Main():
                         elif state == State.OVER:
                             state = State.TITLE
 
-
             screen.fill(background)
 
             if state == State.TITLE:
@@ -68,4 +60,4 @@ class Main():
 
 
 if __name__ == "__main__":
-    Main(SCREEN_SIZE, FRAMERATE, State.TITLE, BLACK)
+    Main(ScreenAttributes.SIZE.value, ScreenAttributes.FRAMERATE.value, State.TITLE, ScreenAttributes.BACKGROUND.value)

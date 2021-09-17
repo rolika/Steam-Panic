@@ -1,14 +1,8 @@
 from pygame import key, sprite, Surface
 from pygame.locals import *
 
+from constants import PlayerAttributes
 from misc import apply_gravity, constrain_to_screen, stands_on_platform
-
-
-PLAYER_RUN_ACCELERATION = 0.1
-PLAYER_CLIMB_ACCELERATION = 0.1
-PLAYER_RUN_SPEED = 2
-PLAYER_CLIMB_SPEED = 1
-PLAYER_JUMP_ACCELERATION = 0.5
 
 
 class SimpleSprite(sprite.Sprite):
@@ -34,8 +28,9 @@ class CharacterSprite(SimpleSprite):
 
 
 class Player(CharacterSprite):
-    def __init__(self, size:tuple=(16,32)):
-        super().__init__(size)
+    def __init__(self, attributes:PlayerAttributes):
+        super().__init__(attributes.SIZE.value)
+        self.attributes = attributes
         self.on_platform = False
 
     @constrain_to_screen
@@ -52,15 +47,15 @@ class Player(CharacterSprite):
         if not any(keys):
             return False
         if keys[K_UP]:
-            self.dy -= PLAYER_CLIMB_ACCELERATION
+            self.dy -= self.attributes.CLIMB_ACCELERATION.value
         elif keys[K_DOWN]:
-            self.dy += PLAYER_CLIMB_ACCELERATION
+            self.dy += self.attributes.CLIMB_ACCELERATION.value
         if keys[K_RIGHT]:
-            self.dx += PLAYER_RUN_ACCELERATION
+            self.dx += self.attributes.RUN_ACCELERATION.value
         elif keys[K_LEFT]:
-            self.dx -= PLAYER_RUN_ACCELERATION
+            self.dx -= self.attributes.RUN_ACCELERATION.value
         if keys[K_SPACE]:
-            self.dy -= PLAYER_JUMP_ACCELERATION
+            self.dy -= self.attributes.JUMP_ACCELERATION.value
         return True
 
     def _check_on_platform(self, platforms):
