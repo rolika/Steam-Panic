@@ -24,10 +24,19 @@ def import_frames(img:str, num_of_frames:int, size:tuple) -> list:
 def apply_gravity(update:callable) -> callable:
     def gravitate(element):
         if not (element.controlled or element.on_platform):
-            element.dx = 0
             element.dy += element.attributes.GRAVITY_ACCELERATION.value
         return update(element)
     return gravitate
+
+
+def apply_horizontal_drag(update:callable) -> callable:
+    def drag(element):
+        if element.dx > 0:
+            element.dx -= element.attributes.RUN_ACCELERATION.value
+        if element.dx < 0:
+            element.dx += element.attributes.RUN_ACCELERATION.value
+        return update(element)
+    return drag
 
 
 def constrain_to_screen(update:callable):
@@ -59,6 +68,17 @@ def clamp(x, min_x, max_x):
         return max_x
     else:
         return x
+
+
+def drag(element):
+    if element.dx > 0:
+        element.dx -= element.attributes.RUN_ACCELERATION.value
+    if element.dx < 0:
+        element.dx += element.attributes.RUN_ACCELERATION.value
+    if element.dy > 0:
+        element.dy -= element.attributes.CLIMB_ACCELERATION.value
+    if element.dy < 0:
+        element.dy += element.attributes.CLIMB_ACCELERATION.value
 
 
 def stands_on_platform(character, platform) -> bool:

@@ -2,7 +2,7 @@ from pygame import key, sprite, Surface
 from pygame.locals import *
 
 from constants import PlayerAttributes
-from misc import apply_gravity, clamp, constrain_to_screen, stands_on_platform
+from misc import clamp, drag, stands_on_platform
 
 
 class SimpleSprite(sprite.Sprite):
@@ -31,36 +31,33 @@ class Player(CharacterSprite):
     def __init__(self, attributes:PlayerAttributes):
         super().__init__(attributes.SIZE.value)
         self.attributes = attributes
+        self.rect.center = self.attributes.START_POS.value
+        self._on_ladder = False
         self.on_platform = False
 
-    @constrain_to_screen
-    #@apply_gravity
     def update(self):
-        self.controlled = self._get_input()
-        # self.on_platform = self._check_on_platform(platforms)
+        self._get_input()
         self.rect.centerx += self.dx
         self.rect.centery += self.dy
-        return self
 
     def _get_input(self):
         keys = key.get_pressed()
-        if not any(keys):
-            return False
-        if keys[K_UP]:
+        if keys[K_UP] and self._on_ladder:
             self.dy -= self.attributes.CLIMB_ACCELERATION.value
             self.dy = clamp(self.dy, -self.attributes.MAX_CLIMB_SPEED.value, 0)
-        elif keys[K_DOWN]:
+        elif keys[K_DOWN] and self._on_ladder:
             self.dy += self.attributes.CLIMB_ACCELERATION.value
             self.dy = clamp(self.dy, 0, self.attributes.MAX_CLIMB_SPEED.value)
-        if keys[K_RIGHT]:
+        elif keys[K_RIGHT]:
             self.dx += self.attributes.RUN_ACCELERATION.value
             self.dx = clamp(self.dx, 0, self.attributes.MAX_RUN_SPEED.value)
         elif keys[K_LEFT]:
             self.dx -= self.attributes.RUN_ACCELERATION.value
             self.dx = clamp(self.dx, -self.attributes.MAX_RUN_SPEED.value, 0)
-        if keys[K_SPACE]:
-            self.dy -= self.attributes.JUMP_ACCELERATION.value
-        return True
+        # elif keys[K_SPACE]:
+        #     self.dy -= self.attributes.JUMP_ACCELERATION.value
+        else:
+            drag(self)
 
     def _check_on_platform(self, platforms):
         platform = sprite.spritecollideany(self, platforms, collided=stands_on_platform)

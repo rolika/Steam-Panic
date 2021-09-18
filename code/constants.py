@@ -15,10 +15,12 @@ class ScreenAttributes(enum.Enum):
 
 
 class PlayerAttributes(enum.Enum):
+    START_POS = (320, 462)
     SIZE = (16, 32)
     GRAVITY_ACCELERATION = 0.05
-    RUN_ACCELERATION = 0.1
+    RUN_ACCELERATION = 0.5
+    RUN_DECCELERATION = 1
     CLIMB_ACCELERATION = 0.1
     JUMP_ACCELERATION = 0.5
-    MAX_RUN_SPEED = 2
+    MAX_RUN_SPEED = 5
     MAX_CLIMB_SPEED = 1

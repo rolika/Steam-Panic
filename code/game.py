@@ -2,7 +2,7 @@ from pygame import sprite, Surface
 
 from constants import PlayerAttributes
 from text import SimpleText
-from sprites import Platform, Player
+from sprites import Player
 
 
 class Game:
@@ -16,36 +16,31 @@ class Game:
         self._title_text.rect.center = midscreen
 
         self._player_sprite = Player(PlayerAttributes)
-        self._player_sprite.rect.center = midscreen
-
-        # self._platform_sprite = Platform()
-        # self._platform_sprite.rect.center = (midscreen[0], 240)
 
     def show_title(self):
         self._reset_containers()
         self._text_container.add(self._title_text)
         self._text_container.draw(self._screen)
         self._text_container.update()
-        return
 
     def play(self):
         self._reset_containers()
 
         self._player_container.add(self._player_sprite)
-        # self._platform_container.add(self._platform_sprite)
 
         self._player_container.draw(self._screen)
-        # self._platform_container.draw(self._screen)
 
         self._player_container.update()
-        # self._platform_container.update()
+        self._keep_inside(self._player_sprite, self._screen)
 
     def _create_containers(self):
         self._text_container = sprite.Group()
         self._player_container = sprite.GroupSingle()
-        # self._platform_container = sprite.Group()
 
     def _reset_containers(self):
         self._text_container.empty()
         self._player_container.empty()
-        # self._platform_container.empty()
+    
+    def _keep_inside(self, element:sprite.Sprite, area:Surface):
+        if not area.get_rect().contains(element.rect):
+            element.rect.clamp_ip(area.get_rect())
