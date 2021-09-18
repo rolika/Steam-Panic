@@ -55,7 +55,7 @@ class Main():
                 pygame.quit()
                 return
 
-            pygame.display.update()
+            pygame.display.flip()
             clock.tick(framerate)
 
 

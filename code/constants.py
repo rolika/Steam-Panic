@@ -20,3 +20,5 @@ class PlayerAttributes(enum.Enum):
     RUN_ACCELERATION = 0.1
     CLIMB_ACCELERATION = 0.1
     JUMP_ACCELERATION = 0.5
+    MAX_RUN_SPEED = 2
+    MAX_CLIMB_SPEED = 1

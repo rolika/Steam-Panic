@@ -2,7 +2,7 @@ from pygame import image, Rect, Surface
 
 from pathlib import Path
 
-from constants import GameAttributes, PlayerAttributes, ScreenAttributes
+from constants import GameAttributes, ScreenAttributes
 
 
 def import_image(img:str, pos:list=[0,0], size:tuple=None) -> Surface:
@@ -22,16 +22,16 @@ def import_frames(img:str, num_of_frames:int, size:tuple) -> list:
 
 
 def apply_gravity(update:callable) -> callable:
-    def gravitate(element, platforms):
+    def gravitate(element):
         if not (element.controlled or element.on_platform):
             element.dx = 0
-            element.dy += PlayerAttributes.GRAVITY_ACCELERATION.value
-        return update(element, platforms)
+            element.dy += element.attributes.GRAVITY_ACCELERATION.value
+        return update(element)
     return gravitate
 
 
 def constrain_to_screen(update:callable):
-    def constrain(element, platforms) -> callable:
+    def constrain(element) -> callable:
         left_limit = element.size[0] // 2 + 1
         right_limit = ScreenAttributes.SIZE.value[0] - left_limit
         top_limit = element.size[1] // 2 + 1
@@ -48,9 +48,19 @@ def constrain_to_screen(update:callable):
         if element.rect.centery > bottom_limit:
             element.rect.centery = bottom_limit
             element.dy = 0
-        return update(element, platforms)
+        return update(element)
     return constrain
+
+
+def clamp(x, min_x, max_x):
+    if x < min_x:
+        return min_x
+    elif x > max_x:
+        return max_x
+    else:
+        return x
+
 
 def stands_on_platform(character, platform) -> bool:
     return character.rect.bottom >= platform.rect.top\
-           and platform.rect.left <= character.rect.left and platform.rect.right >= character.rect.right
+           and platform.rect.left <= character.rect.right and platform.rect.right >= character.rect.left
